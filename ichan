@@ -1,0 +1,90 @@
+#!/bin/bash
+
+ENV_FILE=./.env
+DOCKER_COMPOSE_FILE=./docker/docker-compose.yaml
+DOCKER_PROJECT_NAME=iseokchan5
+
+if [ ! -f "$ENV_FILE" ]; then
+    echo "Please create $ENV_FILE"
+    exit 1
+fi
+
+dev() {
+    check_db
+    runserver
+    front_dev
+}
+
+run() {
+    error "Release script is not defined yet."
+}
+
+check_db() {
+    if ! db_isready ; then
+        error "Database is not running"
+        exit 1
+    fi
+}
+
+run_db() {
+    docker-compose --file="$DOCKER_COMPOSE_FILE" --env-file="$ENV_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev up -d
+}
+
+stop_db() {
+    docker-compose --file="$DOCKER_COMPOSE_FILE" --env-file="$ENV_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev stop
+}
+
+db_isready() {
+    docker exec iseokchan5_db pg_isready
+}
+
+migrate() {
+    pipenv run python manage.py migrate
+}
+
+makemigrations() {
+    pipenv run python manage.py makemigrations
+}
+
+runserver() {
+    pipenv run python manage.py runserver
+}
+
+front_dev() {
+    yarn workspace front dev
+}
+
+front_build() {
+    yarn workspace front build
+}
+
+front_run() {
+    yarn workspace front run
+}
+
+error() {
+    echo -e "\033[31mERROR\033[0m" "$@"
+}
+
+pylint() {
+    pipenv run pylint iseokchan iseok
+}
+
+eslint() {
+    yarn eslint --max-warnings=0 "front/**/*.{js,jsx,ts,tsx}" "$@"
+}
+
+stylelint() {
+    yarn stylelint "front/**/*.{js,jsx,ts,tsx}" "$@"
+}
+
+fmt() {
+    pipenv run black .
+    yarn prettier --write "front/**/*.+(js|jsx|ts|tsx)"
+}
+
+if [ "$#" -eq "0" ]; then
+    exit 1
+fi
+
+eval "$@"
