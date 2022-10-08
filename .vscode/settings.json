@@ -1,0 +1,9 @@
+{
+  "python.linting.enabled": true,
+  "python.linting.lintOnSave": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.pylintArgs": [
+    "--load-plugin=pylint_django",
+    "--help-msg=django-not-configured"
+  ]
+}
