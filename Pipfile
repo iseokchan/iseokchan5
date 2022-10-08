@@ -8,6 +8,8 @@ django = "*"
 djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
+django-environ = "*"
+psycopg2 = "*"
 
 [dev-packages]
 pylint = "*"
