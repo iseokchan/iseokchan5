@@ -19,6 +19,12 @@ run() {
     error "Release script is not defined yet."
 }
 
+test() {
+    front_test & 
+    back_test &
+    wait
+}
+
 check_db() {
     if ! db_isready ; then
         error "Database is not running"
@@ -50,6 +56,10 @@ runserver() {
     pipenv run python manage.py runserver
 }
 
+back_test() {
+    pipenv run python manage.py test
+}
+
 front_dev() {
     yarn workspace front dev
 }
@@ -60,6 +70,10 @@ front_build() {
 
 front_run() {
     yarn workspace front run
+}
+
+front_test() {
+    yarn workspace front test
 }
 
 error() {
