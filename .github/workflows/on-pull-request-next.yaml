@@ -1,0 +1,72 @@
+name: On Pull Request (Next.js)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - front/**
+  pull_request:
+    types:
+      - synchronize
+      - opened
+      - reopened
+      - unlocked
+    paths:
+      - front/**
+
+jobs:
+  install-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+  run-lints:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+
+      - name: Copy env file
+        run: cp env .env
+
+      - name: Run eslint
+        run: ./ichan eslint
+
+      - name: Run stylelint
+        run: ./ichan stylelint
+
+  build-next-app:
+    runs-on: ubuntu-latest
+    needs: install-dependencies
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+
+      - name: Copy env file
+        run: cp env .env
+
+      - name: Build Next App
+        run: ./ichan front_build
