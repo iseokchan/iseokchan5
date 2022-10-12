@@ -11,8 +11,7 @@ fi
 
 dev() {
     check_db
-    runserver
-    front_dev
+    runserver & front_dev && fg
 }
 
 run() {
