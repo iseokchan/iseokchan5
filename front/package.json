@@ -10,15 +10,19 @@
     "test": "jest"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.11",
     "@chakra-ui/react": "^2.3.5",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "add": "^2.0.6",
+    "chakra-react-select": "^4.2.5",
     "framer-motion": "^6",
     "next": "12.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
-    "styled-component": "^2.8.0"
+    "styled-component": "^2.8.0",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@stylelint/postcss-css-in-js": "^0.38.0",
