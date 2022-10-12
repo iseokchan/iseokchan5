@@ -33,7 +33,7 @@ set_dev_secrets() {
 dev() {
     set_dev_secrets
     check_db
-    runserver & front_dev && fg
+    (trap 'kill 0' SIGINT; runserver & front_dev)
 }
 
 run() {
@@ -41,9 +41,7 @@ run() {
 }
 
 test() {
-    front_test & 
-    back_test &
-    wait
+    (trap 'kill 0' SIGINT; front_test & back_test)
 }
 
 check_db() {
