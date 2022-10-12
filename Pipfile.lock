@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "57c604820795bb3b09b4b4a955e073c535fa33abaf7e56954b6924ed9b32b831"
+            "sha256": "599c4e3b8e880ec2287b1f445d1cf4fd3ce5d689ca53e36ecf92af92fb0de305"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -31,14 +31,6 @@
             ],
             "index": "pypi",
             "version": "==4.1.2"
-        },
-        "django-environ": {
-            "hashes": [
-                "sha256:bff5381533056328c9ac02f71790bd5bf1cea81b1beeb648f28b81c9e83e0a21",
-                "sha256:f21a5ef8cc603da1870bbf9a09b7e5577ab5f6da451b843dbcc721a7bca6b3d9"
-            ],
-            "index": "pypi",
-            "version": "==0.9.0"
         },
         "django-filter": {
             "hashes": [
@@ -100,11 +92,11 @@
     "develop": {
         "astroid": {
             "hashes": [
-                "sha256:81f870105d892e73bf535da77a8261aa5bde838fa4ed12bb2f435291a098c581",
-                "sha256:997e0c735df60d4a4caff27080a3afc51f9bdd693d3572a4a0b7090b645c36c5"
+                "sha256:2df4f9980c4511474687895cbfdb8558293c1a826d9118bb09233d7c2bff1c83",
+                "sha256:867a756bbf35b7bc07b35bfa6522acd01f91ad9919df675e8428072869792dce"
             ],
             "markers": "python_full_version >= '3.7.2'",
-            "version": "==2.12.10"
+            "version": "==2.12.11"
         },
         "black": {
             "hashes": [
@@ -260,7 +252,7 @@
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
-            "markers": "python_full_version < '3.11.0a7'",
+            "markers": "python_version < '3.11'",
             "version": "==2.0.1"
         },
         "tomlkit": {
