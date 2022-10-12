@@ -16,7 +16,7 @@ on:
       - front/**
 
 jobs:
-  install-dependencies:
+  install-node-dependencies:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,9 +30,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-  run-lints:
+  run-eslint-and-stylelint:
     runs-on: ubuntu-latest
-    needs: install-dependencies
+    needs: install-node-dependencies
 
     steps:
       - uses: actions/checkout@v3
@@ -52,9 +52,28 @@ jobs:
       - name: Run stylelint
         run: ./ichan stylelint
 
+  run-next-tests:
+    runs-on: ubuntu-latest
+    needs: install-node-dependencies
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+          cache: "yarn"
+      - run: yarn install --frozen-lockfile
+
+      - name: Copy env file
+        run: cp env .env
+
+      - name: Run test for next.js
+        run: ./ichan front_test
+
   build-next-app:
     runs-on: ubuntu-latest
-    needs: install-dependencies
+    needs: install-node-dependencies
 
     steps:
       - uses: actions/checkout@v3
