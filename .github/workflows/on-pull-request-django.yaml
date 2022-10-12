@@ -21,7 +21,7 @@ env:
   PYTHON_VERSION: "3.10"
 
 jobs:
-  install-dependencies:
+  install-python-dependencies:
     runs-on: ubuntu-latest
 
     steps:
@@ -48,7 +48,7 @@ jobs:
 
   run-pylint:
     runs-on: ubuntu-latest
-    needs: install-dependencies
+    needs: install-python-dependencies
 
     steps:
       - uses: actions/checkout@v3
@@ -70,7 +70,7 @@ jobs:
 
   run-django-tests:
     runs-on: ubuntu-latest
-    needs: install-dependencies
+    needs: install-python-dependencies
 
     steps:
       - uses: actions/checkout@v3
