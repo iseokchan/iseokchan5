@@ -76,14 +76,17 @@ db_isready() {
 }
 
 migrate() {
-    pipenv run python manage.py migrate
+    set_dev_secrets
+    pipenv run python manage.py migrate "$@"
 }
 
 makemigrations() {
-    pipenv run python manage.py makemigrations
+    set_dev_secrets
+    pipenv run python manage.py makemigrations "$@"
 }
 
 runserver() {
+    set_dev_secrets
     pipenv run python manage.py runserver
 }
 
