@@ -85,6 +85,11 @@ makemigrations() {
     pipenv run python manage.py makemigrations "$@"
 }
 
+showmigrations() {
+    set_dev_secrets
+    pipenv run python manage.py showmigrations "$@"
+}
+
 runserver() {
     set_dev_secrets
     pipenv run python manage.py runserver
