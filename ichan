@@ -76,15 +76,28 @@ db_isready() {
 }
 
 migrate() {
-    pipenv run python manage.py migrate
+    set_dev_secrets
+    pipenv run python manage.py migrate "$@"
 }
 
 makemigrations() {
-    pipenv run python manage.py makemigrations
+    set_dev_secrets
+    pipenv run python manage.py makemigrations "$@"
+}
+
+showmigrations() {
+    set_dev_secrets
+    pipenv run python manage.py showmigrations "$@"
 }
 
 runserver() {
+    set_dev_secrets
     pipenv run python manage.py runserver
+}
+
+createsuperuser() {
+    set_dev_secrets
+    pipenv run python manage.py createsuperuser "$@"
 }
 
 back_test() {
