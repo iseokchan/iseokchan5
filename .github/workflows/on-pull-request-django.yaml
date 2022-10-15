@@ -82,7 +82,7 @@ jobs:
         run: pip install pipenv
 
       - name: Run Database
-        run: ./ichan run_db
+        run: ./ichan up_db
 
       - name: Install Retry-Cli
         run: |
