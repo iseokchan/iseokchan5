@@ -95,6 +95,11 @@ runserver() {
     pipenv run python manage.py runserver
 }
 
+createsuperuser() {
+    set_dev_secrets
+    pipenv run python manage.py createsuperuser "$@"
+}
+
 back_test() {
     set_dev_secrets
     pipenv run python manage.py test
