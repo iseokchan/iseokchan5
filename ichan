@@ -100,6 +100,11 @@ createsuperuser() {
     pipenv run python manage.py createsuperuser "$@"
 }
 
+collectstatic() {
+    set_dev_secrets
+    pipenv run python manage.py collectstatic "$@"
+}
+
 back_test() {
     set_dev_secrets
     pipenv run python manage.py test
