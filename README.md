@@ -18,8 +18,7 @@
   - NEXT.js with TypeScript
   - Axios
   - SWR
-  - Semantic UI
-  - Prisma
+  - Chakra-ui
 
 ### 테스팅
 

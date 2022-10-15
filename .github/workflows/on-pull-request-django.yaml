@@ -53,9 +53,6 @@ jobs:
           path: .venv
           key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}
 
-      - name: Copy env file
-        run: cp env .env
-
       - name: Install pipenv
         run: pip install pipenv
 
@@ -75,14 +72,11 @@ jobs:
           path: .venv
           key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}
 
-      - name: Copy env file
-        run: cp env .env
-
       - name: Install pipenv
         run: pip install pipenv
 
-      - name: Run Databse
-        run: ./ichan run_db
+      - name: Run Database
+        run: ./ichan up_db
 
       - name: Install Retry-Cli
         run: |

@@ -1,8 +1,0 @@
-DEBUG=true
-SECRET_KEY=django-insecure-!5s^&@xzcl(q7oj6f%*guq_2gdu9r#+m-#x7*f^kefo!(c2v*k
-
-POSTGRES_HOST=127.0.0.1
-POSTGRES_PORT=5432
-POSTGRES_DATABASE=iseokchan
-POSTGRES_USER=ichan_master
-POSTGRES_PASSWORD=ichan
