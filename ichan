@@ -47,7 +47,7 @@ test() {
 check_db() {
     if ! db_isready ; then
         error "Database is not running"
-        exit 1
+        yarn retry -t 1000 --max-timeout=60000 ./ichan db_isready && check_db
     fi
 }
 
