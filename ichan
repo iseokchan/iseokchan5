@@ -105,6 +105,21 @@ collectstatic() {
     pipenv run python manage.py collectstatic "$@"
 }
 
+flush() {
+    set_dev_secrets
+    pipenv run python manage.py flush "$@"
+}
+
+dbshell() {
+    set_dev_secrets
+    pipenv run python manage.py dbshell "$@"
+}
+
+loaddata() {
+    set_dev_secrets
+    pipenv run python manage.py loaddata "$@"
+}
+
 back_test() {
     set_dev_secrets
     pipenv run python manage.py test
