@@ -9,12 +9,7 @@ set_dev_secrets() {
 
     case $target in
         all)
-            set_dev_secrets django
             set_dev_secrets db
-        ;;
-        django)
-            export DEBUG=true
-            export SECRET_KEY="django-insecure-!5s^&@xzcl(q7oj6f%*guq_2gdu9r#+m-#x7*f^kefo!(c2v*k"
         ;;
         db)
             export POSTGRES_HOST=127.0.0.1
@@ -143,10 +138,6 @@ front_test() {
 
 error() {
     echo -e "\033[31mERROR\033[0m" "$@"
-}
-
-pylint() {
-    pipenv run pylint iseokchan iseok
 }
 
 eslint() {
