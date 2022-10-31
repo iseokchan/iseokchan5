@@ -2,7 +2,7 @@
   "extends": "next",
   "settings": {
     "next": {
-      "rootDir": "front/"
+      "rootDir": "iseokchan/"
     }
   }
 }

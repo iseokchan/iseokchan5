@@ -1,7 +1,7 @@
 {
   "private": "false",
   "workspaces": [
-    "front"
+    "iseokchan"
   ],
   "devDependencies": {
     "eslint": "^8.24.0",
