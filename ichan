@@ -17,6 +17,7 @@ set_dev_secrets() {
             export POSTGRES_DATABASE=iseokchan
             export POSTGRES_USER=ichan_master
             export POSTGRES_PASSWORD=ichan
+            export DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
         ;;
         *)
         error "Unknown secret" "$@"
@@ -25,18 +26,46 @@ set_dev_secrets() {
     esac
 }
 
+iseokchan() {
+    yarn workspace iseokchan "$@"
+}
+
 dev() {
     set_dev_secrets
     check_db
-    (trap 'kill 0' SIGINT; runserver & front_dev)
-}
 
-run() {
-    error "Release script is not defined yet."
+    local target=${1:-all}
+
+    case $target in
+        all)
+            iseokchan dev
+        ;;
+        migrate)
+            iseokchan prisma migrate dev "${@:2}"
+        ;;
+        studio)
+            iseokchan prisma studio
+        ;;
+        yarn)
+            iseokchan "${@:2}"
+        ;;
+        *)
+        error "Unknown command" "$@"
+        return 1
+        ;;
+    esac
 }
 
 test() {
-    (trap 'kill 0' SIGINT; front_test & back_test)
+    iseokchan test
+}
+
+run() {
+    iseokchan run
+}
+
+build() {
+    iseokchan bulid
 }
 
 check_db() {
@@ -141,16 +170,16 @@ error() {
 }
 
 eslint() {
-    yarn eslint --max-warnings=0 "front/**/*.{js,jsx,ts,tsx}" "$@"
+    yarn eslint --max-warnings=0 "iseokchan/**/*.{js,jsx,ts,tsx}" "$@"
 }
 
 stylelint() {
-    yarn stylelint "front/**/*.{js,jsx,ts,tsx}" "$@"
+    yarn stylelint "iseokchan/**/*.{js,jsx,ts,tsx}" "$@"
 }
 
 fmt() {
     pipenv run black .
-    yarn prettier --write "front/**/*.+(js|jsx|ts|tsx)"
+    yarn prettier --write "iseokchan/**/*.+(js|jsx|ts|tsx)"
 }
 
 if [ "$#" -eq "0" ]; then
