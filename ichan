@@ -12,12 +12,11 @@ set_dev_secrets() {
             set_dev_secrets db
         ;;
         db)
-            export POSTGRES_HOST=127.0.0.1
             export POSTGRES_PORT=5432
             export POSTGRES_DATABASE=iseokchan
             export POSTGRES_USER=ichan_master
             export POSTGRES_PASSWORD=ichan
-            export DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+            export DATABASE_URL=postgresql://ichan_master:ichan@db:${POSTGRES_PORT}/iseokchan
         ;;
         *)
         error "Unknown secret" "$@"
@@ -32,7 +31,6 @@ iseokchan() {
 
 dev() {
     set_dev_secrets
-    check_db
 
     local target=${1:-all}
 
@@ -49,6 +47,21 @@ dev() {
         yarn)
             iseokchan "${@:2}"
         ;;
+        build) 
+            build
+            ;;
+        up)
+            up
+        ;;
+        down)
+            down
+        ;;
+        start)
+            start
+        ;;
+        stop)
+            stop
+        ;;
         *)
         error "Unknown command" "$@"
         return 1
@@ -60,12 +73,8 @@ test() {
     iseokchan test
 }
 
-run() {
-    iseokchan run
-}
-
 build() {
-    iseokchan build
+    docker build -f "docker/Dockerfile" -t iseokchan5:latest "$@" .
 }
 
 check_db() {
@@ -75,23 +84,19 @@ check_db() {
     fi
 }
 
-up_db() {
-    set_dev_secrets db
+up() {
     docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev up -d
 }
 
-down_db() {
-    set_dev_secrets db
+down() {
     docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev down
 }
 
-start_db() {
-    set_dev_secrets db
+start() {
     docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev start -d
 }
 
-stop_db() {
-    set_dev_secrets db
+stop() {
     docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev stop
 }
 
@@ -99,50 +104,6 @@ db_isready() {
     docker exec iseokchan5_db pg_isready
 }
 
-migrate() {
-    set_dev_secrets
-    pipenv run python manage.py migrate "$@"
-}
-
-makemigrations() {
-    set_dev_secrets
-    pipenv run python manage.py makemigrations "$@"
-}
-
-showmigrations() {
-    set_dev_secrets
-    pipenv run python manage.py showmigrations "$@"
-}
-
-runserver() {
-    set_dev_secrets
-    pipenv run python manage.py runserver
-}
-
-createsuperuser() {
-    set_dev_secrets
-    pipenv run python manage.py createsuperuser "$@"
-}
-
-collectstatic() {
-    set_dev_secrets
-    pipenv run python manage.py collectstatic "$@"
-}
-
-flush() {
-    set_dev_secrets
-    pipenv run python manage.py flush "$@"
-}
-
-dbshell() {
-    set_dev_secrets
-    pipenv run python manage.py dbshell "$@"
-}
-
-loaddata() {
-    set_dev_secrets
-    pipenv run python manage.py loaddata "$@"
-}
 
 error() {
     echo -e "\033[31mERROR\033[0m" "$@"
