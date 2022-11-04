@@ -110,16 +110,16 @@ error() {
 }
 
 eslint() {
-    yarn eslint --max-warnings=0 "iseokchan/**/*.{js,jsx,ts,tsx}" "$@"
+    iseokchan eslint --max-warnings=0 "**/*.{js,jsx,ts,tsx}" "$@"
 }
 
 stylelint() {
-    yarn stylelint "iseokchan/**/*.{js,jsx,ts,tsx}" "$@"
+    iseokchan stylelint "**/*.{js,jsx,ts,tsx}" "$@"
 }
 
 fmt() {
     pipenv run black .
-    yarn prettier --write "iseokchan/**/*.+(js|jsx|ts|tsx)"
+    iseokchan prettier --write "**/*.+(js|jsx|ts|tsx)"
 }
 
 if [ "$#" -eq "0" ]; then
