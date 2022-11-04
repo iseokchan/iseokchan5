@@ -118,7 +118,6 @@ stylelint() {
 }
 
 fmt() {
-    pipenv run black .
     iseokchan prettier --write "**/*.+(js|jsx|ts|tsx)"
 }
 
