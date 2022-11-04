@@ -9,12 +9,7 @@ set_dev_secrets() {
 
     case $target in
         all)
-            set_dev_secrets django
             set_dev_secrets db
-        ;;
-        django)
-            export DEBUG=true
-            export SECRET_KEY="django-insecure-!5s^&@xzcl(q7oj6f%*guq_2gdu9r#+m-#x7*f^kefo!(c2v*k"
         ;;
         db)
             export POSTGRES_HOST=127.0.0.1
@@ -22,6 +17,7 @@ set_dev_secrets() {
             export POSTGRES_DATABASE=iseokchan
             export POSTGRES_USER=ichan_master
             export POSTGRES_PASSWORD=ichan
+            export DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
         ;;
         *)
         error "Unknown secret" "$@"
@@ -30,24 +26,52 @@ set_dev_secrets() {
     esac
 }
 
+iseokchan() {
+    yarn workspace iseokchan "$@"
+}
+
 dev() {
     set_dev_secrets
     check_db
-    (trap 'kill 0' SIGINT; runserver & front_dev)
-}
 
-run() {
-    error "Release script is not defined yet."
+    local target=${1:-all}
+
+    case $target in
+        all)
+            iseokchan dev
+        ;;
+        migrate)
+            iseokchan prisma migrate dev "${@:2}"
+        ;;
+        studio)
+            iseokchan prisma studio
+        ;;
+        yarn)
+            iseokchan "${@:2}"
+        ;;
+        *)
+        error "Unknown command" "$@"
+        return 1
+        ;;
+    esac
 }
 
 test() {
-    (trap 'kill 0' SIGINT; front_test & back_test)
+    iseokchan test
+}
+
+run() {
+    iseokchan run
+}
+
+build() {
+    iseokchan build
 }
 
 check_db() {
     if ! db_isready ; then
         error "Database is not running"
-        exit 1
+        yarn retry -t 1000 --max-timeout=60000 ./ichan db_isready && check_db
     fi
 }
 
@@ -105,46 +129,36 @@ collectstatic() {
     pipenv run python manage.py collectstatic "$@"
 }
 
-back_test() {
+flush() {
     set_dev_secrets
-    pipenv run python manage.py test
+    pipenv run python manage.py flush "$@"
 }
 
-front_dev() {
-    yarn workspace front dev
+dbshell() {
+    set_dev_secrets
+    pipenv run python manage.py dbshell "$@"
 }
 
-front_build() {
-    yarn workspace front build
-}
-
-front_run() {
-    yarn workspace front run
-}
-
-front_test() {
-    yarn workspace front test
+loaddata() {
+    set_dev_secrets
+    pipenv run python manage.py loaddata "$@"
 }
 
 error() {
     echo -e "\033[31mERROR\033[0m" "$@"
 }
 
-pylint() {
-    pipenv run pylint iseokchan iseok
-}
-
 eslint() {
-    yarn eslint --max-warnings=0 "front/**/*.{js,jsx,ts,tsx}" "$@"
+    yarn eslint --max-warnings=0 "iseokchan/**/*.{js,jsx,ts,tsx}" "$@"
 }
 
 stylelint() {
-    yarn stylelint "front/**/*.{js,jsx,ts,tsx}" "$@"
+    yarn stylelint "iseokchan/**/*.{js,jsx,ts,tsx}" "$@"
 }
 
 fmt() {
     pipenv run black .
-    yarn prettier --write "front/**/*.+(js|jsx|ts|tsx)"
+    yarn prettier --write "iseokchan/**/*.+(js|jsx|ts|tsx)"
 }
 
 if [ "$#" -eq "0" ]; then

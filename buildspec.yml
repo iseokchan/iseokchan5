@@ -1,0 +1,14 @@
+# buildspec.yml
+version: 0.1
+phases:
+   install:
+     commands:
+       - yarn
+   build:
+     commands:
+       - npm run build
+       - npm run export
+ # npm 명령어는 정적 파일 생성을 위해 package.json에 작성한 scripts에 맞게 작성합니다.
+artifacts: # CodeBuild의 output artifcats를 지정합니다.
+   files:     - '**/*'
+   base-directory: 'dist'   # dist 디렉토리의 모든 파일이 해당됩니다.
