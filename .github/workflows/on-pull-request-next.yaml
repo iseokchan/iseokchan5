@@ -75,4 +75,4 @@ jobs:
       - run: yarn install --frozen-lockfile
 
       - name: Build Next App
-        run: ./ichan build
+        run: ./ichan dev yarn build

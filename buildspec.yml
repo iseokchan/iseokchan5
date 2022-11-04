@@ -1,14 +1,27 @@
-# buildspec.yml
-version: 0.1
+version: 0.2
+
 phases:
-   install:
-     commands:
-       - yarn
-   build:
-     commands:
-       - npm run build
-       - npm run export
- # npm 명령어는 정적 파일 생성을 위해 package.json에 작성한 scripts에 맞게 작성합니다.
-artifacts: # CodeBuild의 output artifcats를 지정합니다.
-   files:     - '**/*'
-   base-directory: 'dist'   # dist 디렉토리의 모든 파일이 해당됩니다.
+  pre_build:
+    commands:
+      - docker version
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG || true
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      # see for cache : https://github.com/aws/aws-codebuild-docker-images/issues/26#issuecomment-370177343
+      - docker build -f "docker/Dockerfile" --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$IMAGE_TAG -t $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+      - docker tag $IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME
+artifacts:
+  files:
+    - .ebextensions/**/*
+    - .platform/**/*
+    - Dockerrun.aws.json
