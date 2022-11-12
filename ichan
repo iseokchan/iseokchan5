@@ -50,17 +50,8 @@ dev() {
         build) 
             build
             ;;
-        up)
-            up
-        ;;
-        down)
-            down
-        ;;
-        start)
-            start
-        ;;
-        stop)
-            stop
+        db)
+            docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev "${@:2}"
         ;;
         *)
         error "Unknown command" "$@"
@@ -84,26 +75,9 @@ check_db() {
     fi
 }
 
-up() {
-    docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev up -d
-}
-
-down() {
-    docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev down
-}
-
-start() {
-    docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev start -d
-}
-
-stop() {
-    docker-compose --file="$DOCKER_COMPOSE_FILE" -p="$DOCKER_PROJECT_NAME" --profile dev stop
-}
-
 db_isready() {
     docker exec iseokchan5_db pg_isready
 }
-
 
 error() {
     echo -e "\033[31mERROR\033[0m" "$@"
