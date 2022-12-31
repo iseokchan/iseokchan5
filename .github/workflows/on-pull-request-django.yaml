@@ -1,0 +1,86 @@
+name: On Pull Request (Django)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - synchronize
+      - opened
+      - reopened
+      - unlocked
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  install-python-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        id: setup-python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Install Dependencies
+        run: |
+          PIPENV_VENV_IN_PROJECT=1 pipenv install --dev
+
+      - name: Cache Pipenv
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}
+
+  run-pylint:
+    runs-on: ubuntu-latest
+    needs: install-python-dependencies
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache Pipenv
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Run Pylint
+        run: ./ichan pylint
+
+  run-django-tests:
+    runs-on: ubuntu-latest
+    needs: install-python-dependencies
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache Pipenv
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Run Database
+        run: ./ichan up_db
+
+      - name: Install Retry-Cli
+        run: |
+          sudo yarn global add retry-cli
+
+      - name: Run Django Tests
+        run: retry -t 1000 --max-timeout=60000 ./ichan db_isready && ./ichan back_test

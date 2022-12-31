@@ -1,4 +1,8 @@
 {
+  "**/*.py": [
+    "pipenv run black",
+    "pipenv run pylint"
+  ],
   "*.{js,jsx,ts,tsx}": [
     "prettier --write",
     "eslint --max-warnings=0",
