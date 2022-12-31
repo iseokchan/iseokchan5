@@ -59,7 +59,7 @@ jobs:
       - run: yarn install --frozen-lockfile
 
       - name: Run test for next.js
-        run: ./ichan test
+        run: ./ichan front_test
 
   build-next-app:
     runs-on: ubuntu-latest
@@ -75,4 +75,4 @@ jobs:
       - run: yarn install --frozen-lockfile
 
       - name: Build Next App
-        run: ./ichan dev yarn build
+        run: ./ichan front_build

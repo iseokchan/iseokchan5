@@ -1,21 +1,5 @@
 version: '3.9'
 services:
-  server:
-    build:
-      context: iseokchan/
-      dockerfile: ../docker/Dockerfile
-    profiles:
-      - dev
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-    ports:
-      - ${PORT-8080}:3000
-    links:
-      - db
-    command: --migrate
-    depends_on:
-      db:
-        condition: service_healthy
   db:
     image: postgres
     container_name: iseokchan5_db
@@ -27,13 +11,5 @@ services:
       - POSTGRES_DB=${POSTGRES_DATABASE}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - TZ=GMT+2
-      - PGTZ=GMT+2
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-
     ports:
       - ${POSTGRES_PORT}:5432
